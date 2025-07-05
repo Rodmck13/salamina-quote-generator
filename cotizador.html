@@ -1,0 +1,1489 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salamina Jewelry - Price Quote Generator</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Cinzel:wght@400;700&family=Lora:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Basic reset and typography */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Lora', serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f9f9f9;
+        }
+
+        h1,
+        h2,
+        h3 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+        }
+
+        /* App container */
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        /* Form container */
+        .form-container {
+            flex: 1;
+            max-width: 600px;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-container h2 {
+            color: #48663a;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Theme selector */
+        .theme-selector {
+            margin-bottom: 20px;
+        }
+
+        .theme-selector h3 {
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+
+        .theme-options {
+            display: flex;
+            gap: 10px;
+        }
+
+        .theme-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            cursor: pointer;
+            padding: 0;
+            position: relative;
+        }
+
+        .theme-btn.active {
+            border-color: #333;
+        }
+
+        .theme-preview {
+            display: block;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+        }
+
+        /* Form elements */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        input,
+        textarea,
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: inherit;
+        }
+
+        textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        /* Form sections */
+        .form-section {
+            margin: 25px 0;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+
+        .form-section h3 {
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        /* Image upload */
+        .image-upload-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .upload-container {
+            flex: 1;
+        }
+
+        .upload-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .image-upload {
+            display: none;
+        }
+
+        .upload-btn {
+            padding: 8px 12px;
+            background: #f0f0f0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9rem;
+        }
+
+        .file-name {
+            font-size: 0.8rem;
+            color: #666;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 150px;
+        }
+
+        /* Items list */
+        #items-container {
+            margin-bottom: 15px;
+        }
+
+        .item-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+
+        .item-row .item-description {
+            flex: 3;
+        }
+
+        .item-row .item-price {
+            flex: 1;
+        }
+
+        .remove-item-btn {
+            background: none;
+            border: none;
+            color: #d9534f;
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .remove-item-btn:hover {
+            background: #f5f5f5;
+        }
+
+        /* Buttons */
+        .btn-primary,
+        .btn-secondary,
+        .btn-reset {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background-color: #48663a;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #3a532e;
+        }
+
+        .btn-secondary {
+            background-color: #f0f0f0;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+
+        .btn-secondary:hover {
+            background-color: #e0e0e0;
+        }
+
+        .btn-reset {
+            background-color: transparent;
+            color: #d9534f;
+            border: 1px solid #d9534f;
+        }
+
+        .btn-reset:hover {
+            background-color: #fdf2f2;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        /* Quote preview */
+        .quote-container {
+            flex: 1;
+            max-width: 800px;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Theme colors */
+        .theme-1 {
+            --primary-color: #48663a;
+            --secondary-color: #d4e6cb;
+        }
+
+        .theme-2 {
+            --primary-color: #365b7b;
+            --secondary-color: #d1e0eb;
+        }
+
+        .theme-3 {
+            --primary-color: #e09c9c;
+            --secondary-color: #f8e8e8;
+        }
+
+        /* Quote header */
+        .quote-header {
+            display: flex;
+            margin-bottom: 30px;
+            gap: 20px;
+        }
+
+        .logo-container {
+            width: 150px;
+        }
+
+        .logo {
+            width: 100%;
+            height: auto;
+        }
+
+        .gold-bar {
+            height: 3px;
+            background: linear-gradient(90deg, #d4af37, #f9d423, #d4af37);
+            margin-top: 10px;
+        }
+
+        .header-content {
+            flex: 1;
+        }
+
+        .client-info {
+            text-align: right;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .title-container {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .title-container h1 {
+            color: var(--primary-color);
+            font-size: 2rem;
+            letter-spacing: 3px;
+        }
+
+        .subtitle {
+            font-family: 'Cinzel', serif;
+            letter-spacing: 2px;
+            color: #666;
+        }
+
+        .quote-number {
+            text-align: right;
+            font-size: 0.9rem;
+        }
+
+        /* Quote content */
+        .quote-content {
+            flex: 1;
+        }
+
+        /* Product images */
+        .product-images {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .main-image {
+            flex: 2;
+        }
+
+        .secondary-image {
+            flex: 1;
+        }
+
+        .image-preview {
+            height: 200px;
+            border: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #fafafa;
+            margin-bottom: 10px;
+            overflow: hidden;
+        }
+
+        .image-placeholder {
+            text-align: center;
+            color: #999;
+        }
+
+        .image-placeholder i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .image-description {
+            font-style: italic;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        /* Items list */
+        .items-section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            color: var(--primary-color);
+        }
+
+        .section-title span {
+            padding: 0 20px;
+            background: white;
+            position: relative;
+            z-index: 1;
+        }
+
+        .section-title:after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
+            z-index: 0;
+        }
+
+        .items-list {
+            border: 1px solid #eee;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .item-header,
+        .quote-item {
+            display: flex;
+            padding: 10px 15px;
+        }
+
+        .item-header {
+            background-color: var(--secondary-color);
+            font-weight: 600;
+        }
+
+        .quote-item {
+            border-top: 1px solid #eee;
+        }
+
+        .quote-item:nth-child(even) {
+            background-color: #fafafa;
+        }
+
+        .description-header,
+        .description {
+            flex: 3;
+        }
+
+        .price-header,
+        .price {
+            flex: 1;
+            text-align: right;
+        }
+
+        /* Total section */
+        .total-section {
+            text-align: right;
+            margin-bottom: 30px;
+            position: relative;
+            padding-top: 20px;
+        }
+
+        .gold-accent {
+            height: 2px;
+            background: linear-gradient(90deg, #d4af37, #f9d423, #d4af37);
+            margin-bottom: 15px;
+        }
+
+        .total-section h2 {
+            display: inline-block;
+            margin-right: 20px;
+            color: var(--primary-color);
+        }
+
+        .total-amount {
+            display: inline-block;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        /* Specifications */
+        .specs-section {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .spec-card {
+            flex: 1;
+            border: 1px solid #eee;
+            border-radius: 4px;
+            padding: 15px;
+        }
+
+        .spec-card h3 {
+            color: var(--primary-color);
+            font-size: 1rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .spec-card p {
+            font-size: 0.9rem;
+            color: #555;
+        }
+
+        /* Footer */
+        .quote-footer {
+            margin-top: auto;
+        }
+
+        .footer-notice {
+            font-size: 0.8rem;
+            text-align: center;
+            color: #666;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .footer-notice i {
+            margin-right: 5px;
+        }
+
+        .footer-brand {
+            text-align: center;
+        }
+
+        .footer-brand p {
+            font-family: 'Cinzel', serif;
+            letter-spacing: 2px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        /* Highlight animation */
+        .highlight {
+            animation: highlight 1s ease;
+        }
+
+        @keyframes highlight {
+            0% {
+                box-shadow: 0 0 0 0 rgba(72, 102, 58, 0.5);
+            }
+
+            50% {
+                box-shadow: 0 0 0 10px rgba(72, 102, 58, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(72, 102, 58, 0);
+            }
+        }
+
+        /* Validation styles */
+        .error {
+            border-color: #d9534f !important;
+        }
+
+        .error-message {
+            color: #d9534f;
+            font-size: 0.8rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        /* Print styles */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+
+            #print-container,
+            #print-container * {
+                visibility: visible;
+            }
+
+            #print-container {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Form Section -->
+        <div class="form-container">
+            <h2><i class="fas fa-gem"></i> Quote Generator</h2>
+
+            <!-- Color Theme Selector -->
+            <div class="theme-selector">
+                <h3>Color Theme:</h3>
+                <div class="theme-options">
+                    <button class="theme-btn theme-1 active" data-theme="theme-1" title="Emerald Green">
+                        <span class="theme-preview" style="background-color: #48663a;"></span>
+                    </button>
+                    <button class="theme-btn theme-2" data-theme="theme-2" title="Sapphire Blue">
+                        <span class="theme-preview" style="background-color: #365b7b;"></span>
+                    </button>
+                    <button class="theme-btn theme-3" data-theme="theme-3" title="Blush Pink">
+                        <span class="theme-preview" style="background-color: #e09c9c;"></span>
+                    </button>
+                </div>
+            </div>
+
+            <form id="quote-form">
+                <div class="form-group">
+                    <label for="client-name">Client Name:</label>
+                    <input type="text" id="client-name" name="client-name" placeholder="Enter client name" required>
+                    <div class="error-message" id="client-name-error">Please enter client name</div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="quote-date">Date:</label>
+                        <input type="date" id="quote-date" name="quote-date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="quote-number">Quote #:</label>
+                        <input type="text" id="quote-number" name="quote-number" placeholder="QT-2025-001" required>
+                        <div class="error-message" id="quote-number-error">Please enter quote number</div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="quote-title">Quote Title:</label>
+                    <input type="text" id="quote-title" name="quote-title" placeholder="Custom Jewelry Design" required>
+                    <div class="error-message" id="quote-title-error">Please enter quote title</div>
+                </div>
+
+                <!-- Image Upload Section -->
+                <div class="form-section">
+                    <h3>Product Images</h3>
+                    <div class="image-upload-group">
+                        <div class="upload-container">
+                            <label>Main Image:</label>
+                            <div class="upload-wrapper">
+                                <input type="file" id="main-image" accept="image/*" class="image-upload">
+                                <button type="button" class="upload-btn"
+                                    onclick="document.getElementById('main-image').click()">
+                                    <i class="fas fa-search"></i> Browse
+                                </button>
+                                <span class="file-name" id="main-image-name">No file selected</span>
+                            </div>
+                        </div>
+                        <div class="upload-container">
+                            <label>Detail Image:</label>
+                            <div class="upload-wrapper">
+                                <input type="file" id="detail-image" accept="image/*" class="image-upload">
+                                <button type="button" class="upload-btn"
+                                    onclick="document.getElementById('detail-image').click()">
+                                    <i class="fas fa-search"></i> Browse
+                                </button>
+                                <span class="file-name" id="detail-image-name">No file selected</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="image-description">Main Item Description:</label>
+                    <input type="text" id="image-description" name="image-description"
+                        placeholder="Description of featured piece">
+                </div>
+
+                <div class="form-section">
+                    <h3>Items</h3>
+                    <div id="items-container">
+                        <div class="item-row">
+                            <input type="text" class="item-description" placeholder="Item description" required>
+                            <input type="number" class="item-price" placeholder="Price" min="0" step="0.01" required>
+                            <button type="button" class="remove-item-btn"><i class="fas fa-times"></i></button>
+                        </div>
+                    </div>
+                    <button type="button" id="add-item-btn" class="btn-secondary"><i class="fas fa-plus"></i> Add
+                        Item</button>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="observations">Observations:</label>
+                        <textarea id="observations" name="observations" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="weight">Weight (grams):</label>
+                        <input type="text" id="weight" name="weight" placeholder="e.g. 12.2g 14k gold">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="stones">Stones:</label>
+                        <input type="text" id="stones" name="stones" placeholder="e.g. 1.7mm brilliant cut">
+                    </div>
+                    <div class="form-group">
+                        <label for="delivery">Delivery Time:</label>
+                        <input type="text" id="delivery" name="delivery" value="15 business days" readonly>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" id="generate-btn" class="btn-primary">
+                        <i class="fas fa-check-circle"></i> Validate & Save
+                    </button>
+                    <span id="save-feedback" style="display:none; color:green; margin-left:10px;">
+                        <i class="fas fa-check"></i> Saved
+                    </span>
+                    <button type="button" id="print-btn" class="btn-secondary"><i class="fas fa-print"></i>
+                        Print</button>
+                    <button type="reset" class="btn-reset"><i class="fas fa-redo"></i> Reset</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Quote Preview Section -->
+        <div class="quote-container theme-1" id="quote-preview">
+            <div class="quote-header">
+                <div class="logo-container">
+                    <img src="recursos/logoCotizador.png" alt="Salamina Jewelry Design" class="logo">
+                    <div class="gold-bar"></div>
+                </div>
+                <div class="header-content">
+                    <div class="client-info">
+                        <p class="client-name">Client: <span id="preview-client-name">[Client Name]</span></p>
+                        <p class="quote-date">Date: <span id="preview-quote-date">[Date]</span></p>
+                    </div>
+                    <div class="title-container">
+                        <h1 id="preview-quote-title">C O T I Z A C I Ó N</h1>
+                        <p class="subtitle">SALAMINA Jewelry Design</p>
+                    </div>
+                    <div class="quote-number">
+                        <p>Quote #: <span id="preview-quote-number">QT-2025-001</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quote-content">
+                <!-- Product Images -->
+                <div class="product-images">
+                    <div class="main-image">
+                        <div class="image-preview" id="main-image-preview">
+                            <div class="image-placeholder">
+                                <i class="fas fa-gem"></i>
+                                <span>Main Product Image</span>
+                            </div>
+                        </div>
+                        <p class="image-description" id="preview-image-description">[Product Description]</p>
+                    </div>
+                    <div class="secondary-image">
+                        <div class="image-preview" id="detail-image-preview">
+                            <div class="image-placeholder">
+                                <i class="fas fa-search-plus"></i>
+                                <span>Detail View</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Items List -->
+                <div class="items-section">
+                    <h2 class="section-title"><span>Item Details</span></h2>
+                    <div class="items-list" id="preview-quote-items">
+                        <div class="item-header">
+                            <div class="description-header">Description</div>
+                            <div class="price-header">Price</div>
+                        </div>
+                        <div class="quote-item">
+                            <div class="description">[Item description]</div>
+                            <div class="price">$0.00</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Total -->
+                <div class="total-section">
+                    <div class="gold-accent"></div>
+                    <h2>Total</h2>
+                    <div class="total-amount" id="preview-quote-total">$0.00</div>
+                </div>
+
+                <!-- Specifications -->
+                <div class="specs-section">
+                    <div class="spec-card">
+                        <h3><i class="fas fa-clipboard"></i> Observations</h3>
+                        <p id="preview-observations">[Special instructions or notes]</p>
+                    </div>
+                    <div class="spec-card">
+                        <h3><i class="fas fa-weight-hanging"></i> Weight & Materials</h3>
+                        <p id="preview-weight">[Weight and material specifications]</p>
+                    </div>
+                    <div class="spec-card">
+                        <h3><i class="far fa-gem"></i> Stones</h3>
+                        <p id="preview-stones">[Stone details]</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quote-footer">
+                <div class="footer-notice">
+                    <p><i class="fas fa-clock"></i> Delivery time: 15 business days after confirmation</p>
+                    <p><i class="fas fa-money-bill-wave"></i> 50% deposit required to begin production</p>
+                </div>
+                <div class="footer-brand">
+                    <p>S A L A M I N A &nbsp;&nbsp;•&nbsp;&nbsp; J E W E L R Y &nbsp;&nbsp;•&nbsp;&nbsp; D E S I G N</p>
+                    <div class="gold-bar"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Main application class
+        class QuoteGenerator {
+            constructor() {
+                this.formElements = {
+                    clientName: document.getElementById('client-name'),
+                    quoteDate: document.getElementById('quote-date'),
+                    quoteNumber: document.getElementById('quote-number'),
+                    quoteTitle: document.getElementById('quote-title'),
+                    mainImage: document.getElementById('main-image'),
+                    detailImage: document.getElementById('detail-image'),
+                    imageDescription: document.getElementById('image-description'),
+                    observations: document.getElementById('observations'),
+                    weight: document.getElementById('weight'),
+                    stones: document.getElementById('stones')
+                };
+
+                this.init();
+            }
+
+            init() {
+                // Set today's date as default
+                const today = new Date().toISOString().split('T')[0];
+                this.formElements.quoteDate.value = today;
+
+                // Load saved data if available
+                this.loadFormData();
+
+                // Add event listeners
+                this.setupEventListeners();
+
+                // Initialize with one item
+                this.addItem();
+
+                // Trigger initial update
+                this.updateQuotePreview();
+            }
+
+            setupEventListeners() {
+                // Form field listeners
+                Object.values(this.formElements).forEach(element => {
+                    if (element) {
+                        element.addEventListener('input', () => {
+                            this.updateQuotePreview();
+                            this.saveFormData();
+                        });
+                    }
+                });
+
+                // File inputs
+                this.formElements.mainImage.addEventListener('change', () => {
+                    this.updateImagePreview(this.formElements.mainImage, 'main-image-preview', 'main-image-name');
+                    this.updateQuotePreview();
+                    this.saveFormData();
+                });
+
+                this.formElements.detailImage.addEventListener('change', () => {
+                    this.updateImagePreview(this.formElements.detailImage, 'detail-image-preview', 'detail-image-name');
+                    this.updateQuotePreview();
+                    this.saveFormData();
+                });
+
+                // Items container
+                document.getElementById('items-container').addEventListener('input', () => {
+                    this.updateQuoteItems();
+                    this.updateQuotePreview();
+                    this.saveFormData();
+                });
+
+                // Add item button
+                document.getElementById('add-item-btn').addEventListener('click', () => this.addItem());
+
+                // Generate quote button
+                document.getElementById('generate-btn').addEventListener('click', () => this.generateQuote());
+
+                // Print button
+                document.getElementById('print-btn').addEventListener('click', () => this.printQuote());
+
+                // Theme selection
+                document.querySelectorAll('.theme-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        const theme = btn.dataset.theme;
+                        document.getElementById('quote-preview').className = `quote-container ${theme}`;
+                        this.saveFormData();
+                    });
+                });
+
+                // Form reset
+                document.querySelector('button[type="reset"]').addEventListener('click', () => {
+                    setTimeout(() => {
+                        this.updateQuotePreview();
+                        localStorage.removeItem('salaminaQuoteData');
+                    }, 0);
+                });
+
+                // Validate required fields on blur
+                document.querySelectorAll('[required]').forEach(field => {
+                    field.addEventListener('blur', () => this.validateField(field));
+                });
+            }
+
+            updateImagePreview(input, previewId, fileNameId) {
+                const preview = document.getElementById(previewId);
+                const fileNameDisplay = document.getElementById(fileNameId);
+
+                if (input.files && input.files[0]) {
+                    fileNameDisplay.textContent = input.files[0].name;
+
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        preview.innerHTML = '';
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.alt = "Uploaded Jewelry Image";
+                        img.style.width = '100%';
+                        img.style.height = '100%';
+                        img.style.objectFit = 'cover';
+                        preview.appendChild(img);
+                    }
+                    reader.readAsDataURL(input.files[0]);
+                } else {
+                    preview.innerHTML = `
+                        <div class="image-placeholder">
+                            <i class="fas fa-gem"></i>
+                            <span>${previewId.includes('main') ? 'Main Product Image' : 'Detail View'}</span>
+                        </div>
+                    `;
+                    fileNameDisplay.textContent = 'No file selected';
+                }
+            }
+
+            updateQuoteItems() {
+                const itemsContainer = document.getElementById('preview-quote-items');
+                // Clear existing items except header
+                while (itemsContainer.children.length > 1) {
+                    itemsContainer.removeChild(itemsContainer.lastChild);
+                }
+
+                const itemRows = document.querySelectorAll('.item-row');
+                let total = 0;
+
+                itemRows.forEach(row => {
+                    const description = this.sanitizeInput(row.querySelector('.item-description').value) || '[Item description]';
+                    const price = parseFloat(row.querySelector('.item-price').value) || 0;
+                    total += price;
+
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = 'quote-item';
+                    itemDiv.innerHTML = `
+                        <div class="description">${description}</div>
+                        <div class="price">$${price.toFixed(2)}</div>
+                    `;
+                    itemsContainer.appendChild(itemDiv);
+                });
+
+                // Update total
+                document.getElementById('preview-quote-total').textContent = `$${total.toFixed(2)}`;
+            }
+
+            updateQuotePreview() {
+                // Basic information
+                document.getElementById('preview-client-name').textContent =
+                    this.sanitizeInput(this.formElements.clientName.value) || '[Client Name]';
+                document.getElementById('preview-quote-date').textContent =
+                    this.formatDate(this.formElements.quoteDate.value) || '[Date]';
+                document.getElementById('preview-quote-title').textContent =
+                    (this.sanitizeInput(this.formElements.quoteTitle.value) || 'C O T I Z A C I Ó N').toUpperCase();
+                document.getElementById('preview-quote-number').textContent =
+                    this.sanitizeInput(this.formElements.quoteNumber.value) || 'QT-2025-001';
+                document.getElementById('preview-image-description').textContent =
+                    this.sanitizeInput(this.formElements.imageDescription.value) || '[Product Description]';
+
+                // Specifications
+                document.getElementById('preview-observations').textContent =
+                    this.sanitizeInput(this.formElements.observations.value) || '[Special instructions or notes]';
+                document.getElementById('preview-weight').textContent =
+                    this.sanitizeInput(this.formElements.weight.value) || '[Weight and material specifications]';
+                document.getElementById('preview-stones').textContent =
+                    this.sanitizeInput(this.formElements.stones.value) || '[Stone details]';
+
+                // Update items and total
+                this.updateQuoteItems();
+            }
+
+            addItem() {
+                const container = document.getElementById('items-container');
+                const itemRow = document.createElement('div');
+                itemRow.className = 'item-row';
+                itemRow.innerHTML = `
+                    <input type="text" class="item-description" placeholder="Item description" required>
+                    <input type="number" class="item-price" placeholder="Price" min="0" step="0.01" required>
+                    <button type="button" class="remove-item-btn"><i class="fas fa-times"></i></button>
+                `;
+                container.appendChild(itemRow);
+
+                // Add event listener to remove button
+                itemRow.querySelector('.remove-item-btn').addEventListener('click', () => {
+                    if (document.querySelectorAll('.item-row').length > 1) {
+                        container.removeChild(itemRow);
+                        this.updateQuoteItems();
+                        this.updateQuotePreview();
+                        this.saveFormData();
+                    } else {
+                        alert('At least one item is required.');
+                    }
+                });
+
+                // Add input listeners to new item fields
+                itemRow.querySelector('.item-description').addEventListener('input', () => {
+                    this.updateQuotePreview();
+                    this.saveFormData();
+                });
+
+                itemRow.querySelector('.item-price').addEventListener('input', () => {
+                    this.updateQuotePreview();
+                    this.saveFormData();
+                });
+
+                // Add validation
+                itemRow.querySelector('.item-description').addEventListener('blur', () =>
+                    this.validateField(itemRow.querySelector('.item-description')));
+                itemRow.querySelector('.item-price').addEventListener('blur', () =>
+                    this.validateField(itemRow.querySelector('.item-price')));
+            }
+
+            generateQuote() {
+                if (!this.validateForm()) {
+                    return;
+                }
+
+                this.updateQuotePreview();
+                const preview = document.getElementById('quote-preview');
+                preview.classList.add('highlight');
+
+                // Show save feedback
+                const feedback = document.getElementById('save-feedback');
+                feedback.style.display = 'inline-block';
+                setTimeout(() => {
+                    feedback.style.display = 'none';
+                }, 3000);
+
+                setTimeout(() => preview.classList.remove('highlight'), 1000);
+            }
+
+            printQuote() {
+                // First validate and generate
+                if (!this.validateForm()) {
+                    return;
+                }
+
+                this.generateQuote();
+
+                const currentTheme = document.querySelector('.theme-btn.active').dataset.theme;
+                const themeColors = {
+                    'theme-1': { primary: '#48663a', secondary: '#d4e6cb' },
+                    'theme-2': { primary: '#365b7b', secondary: '#d1e0eb' },
+                    'theme-3': { primary: '#e09c9c', secondary: '#f8e8e8' }
+                };
+                const colors = themeColors[currentTheme] || themeColors['theme-1'];
+
+                // Create a new window for printing
+                const printWindow = window.open('SalaminaQuotePrint', 'SalaminaQuotePrint');
+                printWindow.document.write(`
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <title>Salamina Jewelry Quote - ${this.formElements.quoteNumber.value || 'QT-XXXX-XXX'}</title>
+                        <style>
+                            @page {
+                                size: A3;
+                                margin: 10mm 10mm;
+                            }
+                            body {
+                                margin: 0;
+                                padding: 20px;
+                                font-family: 'Lora', serif;
+                                line-height: 1.6;
+                                color: #333;
+                                -webkit-print-color-adjust: exact !important;
+                                print-color-adjust: exact !important;
+                            }
+                            .quote-container {
+                                width: 100%;
+                                max-width: 800px;
+                                margin: 0 auto;
+                                padding: 30px;
+                                border: 1px solid #eee;
+                            }
+                            .quote-header {
+                                display: flex;
+                                margin-bottom: 30px;
+                                gap: 20px;
+                            }
+                            .logo-container {
+                                width: 150px;
+                            }
+                            .logo {
+                                width: 100%;
+                                height: auto;
+                            }
+                            .gold-bar {
+                                height: 3px;
+                                background: linear-gradient(90deg, #d4af37, #f9d423, #d4af37);
+                                margin-top: 10px;
+                            }
+                            .header-content {
+                                flex: 1;
+                            }
+                            .client-info {
+                                text-align: right;
+                                font-size: 0.9rem;
+                                margin-bottom: 10px;
+                            }
+                            .title-container {
+                                text-align: center;
+                                margin-bottom: 15px;
+                            }
+                            .title-container h1 {
+                                font-family: 'Playfair Display', serif;
+                                font-size: 2rem;
+                                letter-spacing: 3px;
+                                margin: 0;
+                                color: ${colors.primary} !important;
+                            }
+                            .subtitle {
+                                font-family: 'Cinzel', serif;
+                                letter-spacing: 2px;
+                                color: #666;
+                                margin: 5px 0 0;
+                            }
+                            .quote-number {
+                                text-align: right;
+                                font-size: 0.9rem;
+                            }
+                            .product-images {
+                                display: flex;
+                                gap: 20px;
+                                margin-bottom: 30px;
+                            }
+                            .main-image {
+                                flex: 2;
+                            }
+                            .secondary-image {
+                                flex: 1;
+                            }
+                            .image-preview {
+                                height: 200px;
+                                border: 1px solid #eee;
+                                margin-bottom: 10px;
+                                overflow: hidden;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                            }
+                            .image-preview img {
+                                max-width: 100%;
+                                max-height: 100%;
+                                object-fit: contain;
+                            }
+                            .image-description {
+                                font-style: italic;
+                                text-align: center;
+                                font-size: 0.9rem;
+                                color: #666;
+                            }
+                            .items-section {
+                                margin-bottom: 30px;
+                            }
+                            .section-title {
+                                text-align: center;
+                                margin-bottom: 15px;
+                                font-family: 'Playfair Display', serif;
+                                font-size: 1.3rem;
+                                position: relative;
+                            }
+                            .section-title span {
+                                background: white;
+                                padding: 0 20px;
+                                position: relative;
+                                z-index: 1;
+                            }
+                            .section-title:after {
+                                content: "";
+                                position: absolute;
+                                top: 50%;
+                                left: 0;
+                                right: 0;
+                                height: 1px;
+                                background: linear-gradient(90deg, transparent, ${colors.primary}, transparent) !important;
+                                z-index: 0;
+                            }
+                            .items-list {
+                                border: 1px solid #eee;
+                                border-radius: 4px;
+                                overflow: hidden;
+                            }
+                            .item-header, .quote-item {
+                                display: flex;
+                                padding: 10px 15px;
+                            }
+                            .item-header {
+                                background-color: ${colors.secondary} !important;
+                                font-weight: 600;
+                            }
+                            .quote-item {
+                                border-top: 1px solid #eee;
+                            }
+                            .quote-item:nth-child(even) {
+                                background-color: #fafafa;
+                            }
+                            .description-header, .description {
+                                flex: 3;
+                            }
+                            .price-header, .price {
+                                flex: 1;
+                                text-align: right;
+                            }
+                            .total-section {
+                                text-align: right;
+                                margin-bottom: 30px;
+                                position: relative;
+                                padding-top: 20px;
+                            }
+                            .gold-accent {
+                                height: 2px;
+                                background: linear-gradient(90deg, #d4af37, #f9d423, #d4af37);
+                                margin-bottom: 15px;
+                            }
+                            .total-section h2 {
+                                display: inline-block;
+                                margin-right: 20px;
+                                font-family: 'Playfair Display', serif;
+                                font-size: 1.3rem;
+                            }
+                            .total-amount {
+                                display: inline-block;
+                                font-size: 1.5rem;
+                                font-weight: 700;
+                            }
+                            .specs-section {
+                                display: flex;
+                                gap: 20px;
+                                margin-bottom: 30px;
+                            }
+                            .spec-card {
+                                flex: 1;
+                                border: 1px solid #eee;
+                                border-radius: 4px;
+                                padding: 15px;
+                            }
+                            .spec-card h3 {
+                                font-family: 'Playfair Display', serif;
+                                font-size: 1rem;
+                                margin-bottom: 10px;
+                                display: flex;
+                                align-items: center;
+                                gap: 8px;
+                            }
+                            .spec-card p {
+                                font-size: 0.9rem;
+                                color: #555;
+                            }
+                            .quote-footer {
+                                margin-top: 30px;
+                            }
+                            .footer-notice {
+                                font-size: 0.8rem;
+                                text-align: center;
+                                color: #666;
+                                margin-bottom: 20px;
+                            }
+                            .footer-notice i {
+                                margin-right: 5px;
+                            }
+                            .footer-brand {
+                                text-align: center;
+                            }
+                            .footer-brand p {
+                                font-family: 'Cinzel', serif;
+                                letter-spacing: 2px;
+                                color: #666;
+                                margin-bottom: 10px;
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <div id="print-container">
+                            ${document.getElementById('quote-preview').outerHTML}
+                        </div>
+                        <script>
+                window.onload = function() {
+                    setTimeout(function() {
+                        window.print();
+                        setTimeout(function() {
+                            window.close();
+                        }, 500);
+                    }, 200);
+                };
+            <\/script>
+                    </body>
+                    </html>
+                `);
+                printWindow.document.close();
+            }
+
+            formatDate(dateString) {
+                if (!dateString) return '';
+                const options = { year: 'numeric', month: 'long', day: 'numeric' };
+                return new Date(dateString).toLocaleDateString('en-US', options);
+            }
+
+            sanitizeInput(input) {
+                if (!input) return '';
+                const div = document.createElement('div');
+                div.textContent = input;
+                return div.innerHTML.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            }
+
+            validateField(field) {
+                const errorId = `${field.id}-error`;
+                const errorElement = document.getElementById(errorId);
+
+                if (!field.value.trim()) {
+                    field.classList.add('error');
+                    if (errorElement) errorElement.style.display = 'block';
+                    return false;
+                } else {
+                    field.classList.remove('error');
+                    if (errorElement) errorElement.style.display = 'none';
+                    return true;
+                }
+            }
+
+            validateForm() {
+                let isValid = true;
+
+                // Validate required fields
+                document.querySelectorAll('[required]').forEach(field => {
+                    if (!this.validateField(field)) {
+                        isValid = false;
+                    }
+                });
+
+                // Validate at least one item has both description and price
+                const itemRows = document.querySelectorAll('.item-row');
+                let hasValidItems = false;
+
+                itemRows.forEach(row => {
+                    const description = row.querySelector('.item-description').value.trim();
+                    const price = row.querySelector('.item-price').value.trim();
+
+                    if (description && price) {
+                        hasValidItems = true;
+                    }
+                });
+
+                if (!hasValidItems) {
+                    alert('Please add at least one valid item with description and price');
+                    isValid = false;
+                }
+
+                return isValid;
+            }
+
+            saveFormData() {
+                const formData = {
+                    clientName: this.formElements.clientName.value,
+                    quoteDate: this.formElements.quoteDate.value,
+                    quoteNumber: this.formElements.quoteNumber.value,
+                    quoteTitle: this.formElements.quoteTitle.value,
+                    imageDescription: this.formElements.imageDescription.value,
+                    observations: this.formElements.observations.value,
+                    weight: this.formElements.weight.value,
+                    stones: this.formElements.stones.value,
+                    theme: document.querySelector('.theme-btn.active')?.dataset.theme || 'theme-1',
+                    items: []
+                };
+
+                // Save items
+                document.querySelectorAll('.item-row').forEach(row => {
+                    formData.items.push({
+                        description: row.querySelector('.item-description').value,
+                        price: row.querySelector('.item-price').value
+                    });
+                });
+
+                localStorage.setItem('salaminaQuoteData', JSON.stringify(formData));
+            }
+
+            loadFormData() {
+                const savedData = localStorage.getItem('salaminaQuoteData');
+                if (!savedData) return;
+
+                try {
+                    const formData = JSON.parse(savedData);
+
+                    // Set basic fields
+                    this.formElements.clientName.value = formData.clientName || '';
+                    this.formElements.quoteDate.value = formData.quoteDate || '';
+                    this.formElements.quoteNumber.value = formData.quoteNumber || '';
+                    this.formElements.quoteTitle.value = formData.quoteTitle || '';
+                    this.formElements.imageDescription.value = formData.imageDescription || '';
+                    this.formElements.observations.value = formData.observations || '';
+                    this.formElements.weight.value = formData.weight || '';
+                    this.formElements.stones.value = formData.stones || '';
+
+                    // Set theme
+                    if (formData.theme) {
+                        document.querySelectorAll('.theme-btn').forEach(btn => {
+                            btn.classList.remove('active');
+                            if (btn.dataset.theme === formData.theme) {
+                                btn.classList.add('active');
+                                document.getElementById('quote-preview').className = `quote-container ${formData.theme}`;
+                            }
+                        });
+                    }
+
+                    // Clear existing items (keep first one)
+                    const itemsContainer = document.getElementById('items-container');
+                    while (itemsContainer.children.length > 1) {
+                        itemsContainer.removeChild(itemsContainer.lastChild);
+                    }
+
+                    // Load items
+                    if (formData.items && formData.items.length > 0) {
+                        // Update first item
+                        const firstRow = itemsContainer.querySelector('.item-row');
+                        if (firstRow) {
+                            firstRow.querySelector('.item-description').value = formData.items[0].description || '';
+                            firstRow.querySelector('.item-price').value = formData.items[0].price || '';
+                        }
+
+                        // Add additional items
+                        for (let i = 1; i < formData.items.length; i++) {
+                            this.addItem();
+                            const newRow = itemsContainer.children[itemsContainer.children.length - 1];
+                            newRow.querySelector('.item-description').value = formData.items[i].description || '';
+                            newRow.querySelector('.item-price').value = formData.items[i].price || '';
+                        }
+                    }
+                } catch (e) {
+                    console.error('Error loading saved data:', e);
+                }
+            }
+        }
+
+        // Initialize the application when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            new QuoteGenerator();
+        });
+    </script>
+</body>
+
+</html>
